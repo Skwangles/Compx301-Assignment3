@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AStar {
-    private static final String COMMA_DELIMITER = ",";
     public Node startStar;
     public Node goalStar;
     public int maxTravelDist;
@@ -17,18 +16,19 @@ public class AStar {
 
     /**
      * The non-static main method
-     * @param args
      */
     public void run(String[] args){
         //Code adapted from https://www.baeldung.com/java-csv-file-array
         stars = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(args[0]));) {
+        try (Scanner scanner = new Scanner(new File(args[0]))) {
             //Populating stars list
             while (scanner.hasNextLine()) {
+
                 String[] starCoords = scanner.nextLine().split(",");
+
                 stars.add(new Node(Integer.parseInt(starCoords[0]),Integer.parseInt(starCoords[1])));
             }
-
+            System.out.println("Parsing Other Args");
             //Parsing other args
             startStar = stars.get(Integer.parseInt(args[1]));
             goalStar = stars.get(Integer.parseInt(args[2]));
@@ -37,6 +37,8 @@ public class AStar {
         catch (Exception e){
             System.err.println("Error occurred parsing the Commandline args");
         }
+
+        System.out.println(stars.toString());
     }
 
     /**
@@ -57,8 +59,6 @@ public class AStar {
 
     /**
      * Gets the distance between two Nodes using Pythagoras
-     * @param node1
-     * @param node2
      * @return distance
      */
     public double getDistanceBetweenNodes(Node node1, Node node2){
@@ -97,6 +97,15 @@ public class AStar {
             return false;
         }
 
+       @Override
+        public String toString(){
+           String storedPathString = "";
+           for (Node n: storedPath) {
+               storedPathString += ">"+n.toString();
+           }
+
+           return "X:"+  String.valueOf(x) + " Y:" + String.valueOf(y) + " Cost:" + costOfStoredPath +" Path:" + storedPathString + "\n";
+       }
 
     }
 }
