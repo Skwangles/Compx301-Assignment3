@@ -7,13 +7,50 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 //Extends JPanel class
-public class Plotting extends JPanel {
+public class Plotting {
     //initialize coordinates
+
+    class Frame extends JPanel {
+
     int[] cord = {65, 20, 40, 80};
     int marg = 60;
-    static ArrayList<Coord> coordArrayList = new ArrayList<>();
+    List<Node> stars;
+    List<Node> finalPath;
+
+        public Frame(List<Node> starList, List<Node> finalPathList) {
+            stars = starList;
+            finalPath = finalPathList;
+            int maxNegativeX = 0;
+            int maxNegativeY = 0;
+
+            //Find largest negative value
+            for (Node node : stars) {
+                if (node.x < maxNegativeX) {
+                    maxNegativeX = node.x;
+                }
+                if (node.y < maxNegativeY) {
+                    maxNegativeY = node.y;
+                }
+            }
+
+            //Get & apply offset
+            maxNegativeX = convertToPositiveOffset(maxNegativeX);
+            maxNegativeY = convertToPositiveOffset(maxNegativeY);
+            for (Node node : stars) {
+                node.y = node.y + maxNegativeY;
+                node.x = node.x + maxNegativeX;
+            }
+            for(Node node: finalPath){
+                node.y = node.y + maxNegativeY;
+                node.x = node.x + maxNegativeX;
+            }
+
+        }
+
+
     protected void paintComponent(Graphics grf) {
         //create instance of the Graphics to use its methods
         super.paintComponent(grf);
@@ -37,85 +74,47 @@ public class Plotting extends JPanel {
         graph.setPaint(Color.RED);
 
         // set points to the graph
-        for (int i = 0; i < coordArrayList.size(); i++) {
-            double x1 = marg + scale * coordArrayList.get(i)._x * 2;
-            double y1 = marg + scale * coordArrayList.get(i)._y;
-            graph.fill(new Ellipse2D.Double(x1-4, y1-4, 10, 10));
+        for (int i = 0; i < stars.size(); i++) {
+            double x1 = marg + scale * stars.get(i).x * 2;
+            double y1 = marg + scale * stars.get(i).y;
+            graph.fill(new Ellipse2D.Double(x1 - 4, y1 - 4, 10, 10));
+        }
+
+        //Draw finalPath
+        for(int i = 0; i < finalPath.size()-1; i++){//size()-1 otherwise at end of list outOfBounds
+            graph.draw(new Line2D.Double(finalPath.get(i).x, finalPath.get(i).y, finalPath.get(i+1).x, finalPath.get(i+1).y));
         }
     }
 
     //create getMax() method to find maximum value
     private int getMax() {
         int max = -Integer.MAX_VALUE;
-        for (int i = 0; i < coordArrayList.size(); i++) {
-            if (coordArrayList.get(i)._x > max)
-                max = coordArrayList.get(i)._x;
+        for (int i = 0; i < stars.size(); i++) {
+            if (stars.get(i).x > max)
+                max = stars.get(i).x;
         }
         return max;
     }
 
-    //main() method start
-    public static void main(String args[]) {
-        int negativeX = 0;
-        int negativeY = 0;
-        try{
-            File file = new File("CSVFiles/"+args[0]);
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line = "";
+    public int convertToPositiveOffset(int num) {
+        if (num < 0) {
+            return num * -1;
+        }
+        return 0;//offset is nothing if everything is positive
+    }
 
-            while((line = br.readLine()) != null)
-            {
-                String[] coordValues = line.split(",");
-                if(Integer.parseInt(coordValues[0])<negativeX)
-                {
-                    negativeX = Integer.parseInt(coordValues[0]);
-                }
-                if(Integer.parseInt(coordValues[1])<negativeY)
-                {
-                    negativeY = Integer.parseInt(coordValues[1]);
-                }
-                Coord lineValue = new Coord(Integer.parseInt(coordValues[0]), Integer.parseInt(coordValues[1]));
-                coordArrayList.add(lineValue);
-            }
-            negativeX*=-1;
-            negativeY*=-1;
-            for(int arrayIndex = 0; arrayIndex<coordArrayList.size(); arrayIndex++)
-            {
-                int coordX = coordArrayList.get(arrayIndex)._x;
-                int coordY = coordArrayList.get(arrayIndex)._y;
-                coordX+=negativeX;
-                coordY+=negativeY;
-                System.out.println(coordX + "," + coordY);
-                Coord replaceCoord = new Coord(coordX,coordY);
-                coordArrayList.set(arrayIndex,replaceCoord);
-            }
-        }
-        catch(Exception e)
-        {
-            System.err.println("File not found");
-            System.exit(1);
-        }
+}
+
+    public Plotting(List<Node> stars, List<Node> finalPath) {
         //create an instance of JFrame class
         JFrame frame = new JFrame();
         // set size, layout and location for frame.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new Plotting());
-        frame.setSize(negativeX, negativeY);
+        frame.setSize(500, 500);
+        frame.add(new Frame(stars, finalPath));
         frame.setLocation(0, 0);
         frame.setVisible(true);
-    }
 
-    public static class Coord
-    {
-        int _x;
-        int _y;
-        /*
-        *set coordinates
-        */
-        public Coord(int x, int y)
-        {
-            _x = x;
-            _y = y;
-        }
     }
 }
+
