@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node{
-    int hCost;//Must be -1 to be slight less than the default var
-    int gCost;
+    int hCost = 0;
+    int gCost = 0;
     int x;
     int y;
     Node nodePrevious = null;
-    int costOfPath = Integer.MAX_VALUE;
+//    int costOfPath = Integer.MAX_VALUE;
     private List<Node> storedPath = new ArrayList<>();
 
     /**
@@ -20,7 +20,7 @@ public class Node{
         this.y = y;
     }
 
-    public double getFCost(){
+    public int getFCost(){
         return gCost + hCost;
     }
 
@@ -31,14 +31,14 @@ public class Node{
             storedPathString += ">"+n.toString();
         }
 
-        return "X:"+  String.valueOf(x) + " Y:" + String.valueOf(y) +  " Path:" + storedPathString + "\n";
+        return "X:"+  String.valueOf(x) + " Y:" + String.valueOf(y);
     }
 
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Node))return false;
-        if(((Node) o).x == this.x && ((Node) o).y == this.y) return true;
+    public boolean equals(Object objectInstance) {
+        if (!(objectInstance instanceof Node))return false;
+        if(((Node) objectInstance).x == this.x && ((Node) objectInstance).y == this.y) return true;
         return false;
     }
 }
