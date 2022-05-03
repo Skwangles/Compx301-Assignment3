@@ -2,9 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node{
-    int costOfStoredPath = Integer.MAX_VALUE;//Must be greater than any possible path cost
+    int hCost;//Must be -1 to be slight less than the default var
+    int gCost;
     int x;
     int y;
+    Node nodePrevious = null;
+    int costOfPath = Integer.MAX_VALUE;
     private List<Node> storedPath = new ArrayList<>();
 
     /**
@@ -17,19 +20,8 @@ public class Node{
         this.y = y;
     }
 
-    /**
-     * Sets the storedPath to whichever path has the least cost. Also informs the caller if what the result of the comparison is
-     * @param successor The Node which is travelling to this Node
-     * @param weightOfTravel The cost of the travel between the caller and this.
-     * @return true if the caller had a lower cost.
-     */
-    public boolean isLessThanStored(Node successor, int weightOfTravel){
-        if(successor.costOfStoredPath + weightOfTravel < this.costOfStoredPath){
-            storedPath = successor.storedPath;
-            storedPath.add(successor);
-            return true;
-        }
-        return false;
+    public double getFCost(){
+        return gCost + hCost;
     }
 
     @Override
@@ -39,7 +31,14 @@ public class Node{
             storedPathString += ">"+n.toString();
         }
 
-        return "X:"+  String.valueOf(x) + " Y:" + String.valueOf(y) + " Cost:" + costOfStoredPath +" Path:" + storedPathString + "\n";
+        return "X:"+  String.valueOf(x) + " Y:" + String.valueOf(y) +  " Path:" + storedPathString + "\n";
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Node))return false;
+        if(((Node) o).x == this.x && ((Node) o).y == this.y) return true;
+        return false;
+    }
 }
