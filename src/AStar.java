@@ -39,7 +39,8 @@ public class AStar {
         }
 
 
-
+        //Call this to plot the final path
+        //plot.setup(stars, new Node[]{temp}, startStar, goalStar);
 
         System.out.println("---A* Finished---");
     }
