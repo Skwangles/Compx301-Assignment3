@@ -7,19 +7,20 @@ import java.util.List;
 //Extends JPanel class
 public class Plotting {
     //initialize coordinates
+    JFrame frame;
 
     class Frame extends JPanel {
 
         int offsetX = 0;
         int offsetY = 0;
-        int marg = 60;
+        int marg = 0;
         int widthScale = 1;
         double heightScale = 1;
         List<Node> stars;
-        Node endOfPath;
+        Node[] endOfPath;
         Node beginningOfPath;
 
-        public Frame(List<Node> starList, Node endOfPath, Node beginningOfPath) {
+        public Frame(List<Node> starList, Node[] endOfPath, Node beginningOfPath) {
             stars = starList;
             this.endOfPath = endOfPath;
             this.beginningOfPath = beginningOfPath;
@@ -45,16 +46,15 @@ public class Plotting {
             }
 
         }
-        public int[] convertXYtoGraphCoords(Node n){
-            return new int[] {n.x + offsetX, n.y + offsetY};
-        }
+
+
 
 
     protected void paintComponent(Graphics grf) {
         //create instance of the Graphics to use its methods
         super.paintComponent(grf);
         Graphics2D graph = (Graphics2D) grf;
-        Node currentNode = this.endOfPath;//Must be resettable, this function is called for every frame
+
 
         //Sets the value of a single preference for the rendering algorithms.
         graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -70,14 +70,15 @@ public class Plotting {
 
         double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
 
-        //Draw finalPath
-        while(currentNode != null){
-            int prevIndex = currentNode.index;
-            currentNode = currentNode.nodePrevious;
-            if(currentNode == null) break;
-            graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale,marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
-          }
-
+        for(Node currentNode : endOfPath) {
+            //Draw finalPath
+            while (currentNode != null) {
+                int prevIndex = currentNode.index;
+                currentNode = currentNode.nodePrevious;
+                if (currentNode == null) break;
+                graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale, marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
+            }
+        }
 
 
         //set color for points
@@ -92,7 +93,7 @@ public class Plotting {
         graph.setPaint(Color.GREEN);
         graph.fill(drawNodeFromIndex(beginningOfPath.index, reScalePointsToWindow, 10));
         graph.setPaint(Color.BLUE);
-        graph.fill(drawNodeFromIndex(endOfPath.index, reScalePointsToWindow, 10));
+        graph.fill(drawNodeFromIndex(endOfPath[0].index, reScalePointsToWindow, 10));
         }
 
         private Ellipse2D drawNodeFromIndex(int index, double scale, int starSize){
@@ -120,16 +121,23 @@ public class Plotting {
 
 }
 
-    public Plotting(List<Node> stars, Node end, Node start) {
+    public Plotting(List<Node> stars, Node[] nodesToDraw, Node start) {
         //create an instance of JFrame class
-        JFrame frame = new JFrame();
-        // set size, layout and location for frame.
+        frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1920, 1080);
-        frame.add(new Frame(stars, end, start));
+        frame.setSize(1000, 1000);
         frame.setLocation(0, 0);
+        frame.add(new Frame(stars, nodesToDraw, start));
         frame.setVisible(true);
+    }
 
+    public void setup(List<Node> stars, Node[] nodesToDraw, Node start){
+        frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1000, 1000);
+        frame.setLocation(0, 0);
+        frame.add(new Frame(stars, nodesToDraw, start));
+        frame.setVisible(true);
     }
 }
 

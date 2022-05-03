@@ -24,17 +24,32 @@ public class Node{
         return gCost + hCost;
     }
 
+    public double getDistanceBetween(Node node){
+        return Math.sqrt((this.x - node.x)^2 + (this.y - node.y)^2);
+    }
+
+    public List<Node> findNeighbours(List<Node> stars, int maxDistance){
+        List<Node> neighbours = new ArrayList<>();
+        for(Node n : stars){
+            if(this.getDistanceBetween(n) <= maxDistance){
+                neighbours.add(n);
+            }
+        }
+        return neighbours;
+    }
+
     @Override
     public String toString(){
         String distanceTally = "";
         Node curr = this;
         while (curr.nodePrevious != null){
-            distanceTally += AStar.getDistanceBetweenNodes(curr, curr.nodePrevious) + ", ";
+            distanceTally += curr.getDistanceBetween(curr.nodePrevious) + ", ";
             curr = curr.nodePrevious;
         }
 
         return "X:"+  String.valueOf(x) + " Y:" + String.valueOf(y) + " D:" + distanceTally;
     }
+
 
 
     @Override
