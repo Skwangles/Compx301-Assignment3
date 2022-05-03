@@ -2,11 +2,6 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.geom.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 //Extends JPanel class
@@ -15,14 +10,19 @@ public class Plotting {
 
     class Frame extends JPanel {
 
-    int[] cord = {65, 20, 40, 80};
-    int marg = 60;
-    List<Node> stars;
-    List<Node> finalPath;
+        int offsetX = 0;
+        int offsetY = 0;
+        int marg = 60;
+        int widthScale = 1;
+        double heightScale = 1;
+        List<Node> stars;
+        Node endOfPath;
+        Node beginningOfPath;
 
-        public Frame(List<Node> starList, List<Node> finalPathList) {
+        public Frame(List<Node> starList, Node endOfPath, Node beginningOfPath) {
             stars = starList;
-            finalPath = finalPathList;
+            this.endOfPath = endOfPath;
+            this.beginningOfPath = beginningOfPath;
             int maxNegativeX = 0;
             int maxNegativeY = 0;
 
@@ -37,17 +37,16 @@ public class Plotting {
             }
 
             //Get & apply offset
-            maxNegativeX = convertToPositiveOffset(maxNegativeX);
-            maxNegativeY = convertToPositiveOffset(maxNegativeY);
+            offsetX = convertToPositiveOffset(maxNegativeX);
+            offsetY = convertToPositiveOffset(maxNegativeY);
             for (Node node : stars) {
-                node.y = node.y + maxNegativeY;
-                node.x = node.x + maxNegativeX;
-            }
-            for(Node node: finalPath){
-                node.y = node.y + maxNegativeY;
-                node.x = node.x + maxNegativeX;
+                node.y = node.y + offsetY;
+                node.x = node.x + offsetX;
             }
 
+        }
+        public int[] convertXYtoGraphCoords(Node n){
+            return new int[] {n.x + offsetX, n.y + offsetY};
         }
 
 
@@ -55,6 +54,7 @@ public class Plotting {
         //create instance of the Graphics to use its methods
         super.paintComponent(grf);
         Graphics2D graph = (Graphics2D) grf;
+        Node currentNode = this.endOfPath;//Must be resettable, this function is called for every frame
 
         //Sets the value of a single preference for the rendering algorithms.
         graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -63,28 +63,43 @@ public class Plotting {
         int width = getWidth();
         int height = getHeight();
 
-        // draw graph
+        // draw graph lines
         graph.draw(new Line2D.Double(marg, marg, marg, height - marg));
         graph.draw(new Line2D.Double(marg, height - marg, width - marg, height - marg));
 
-        //find value of x and scale to plot points
-        double scale = (double) (height - 4 * marg) / getMax();
+
+        double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
+
+        //Draw finalPath
+        while(currentNode != null){
+            int prevIndex = currentNode.index;
+            currentNode = currentNode.nodePrevious;
+            if(currentNode == null) break;
+            graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale,marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
+          }
+
+
 
         //set color for points
         graph.setPaint(Color.RED);
 
         // set points to the graph
         for (int i = 0; i < stars.size(); i++) {
-            double x1 = marg + scale * stars.get(i).x * 2;
-            double y1 = marg + scale * stars.get(i).y;
-            graph.fill(new Ellipse2D.Double(x1 - 4, y1 - 4, 10, 10));
+            graph.fill(drawNodeFromIndex(i, reScalePointsToWindow, 4));
         }
 
-        //Draw finalPath
-        for(int i = 0; i < finalPath.size()-1; i++){//size()-1 otherwise at end of list outOfBounds
-            graph.draw(new Line2D.Double(finalPath.get(i).x, finalPath.get(i).y, finalPath.get(i+1).x, finalPath.get(i+1).y));
+        //Draw start and finish
+        graph.setPaint(Color.GREEN);
+        graph.fill(drawNodeFromIndex(beginningOfPath.index, reScalePointsToWindow, 10));
+        graph.setPaint(Color.BLUE);
+        graph.fill(drawNodeFromIndex(endOfPath.index, reScalePointsToWindow, 10));
         }
-    }
+
+        private Ellipse2D drawNodeFromIndex(int index, double scale, int starSize){
+            double x1 = marg + scale * stars.get(index).x * widthScale;
+            double y1 = marg + scale * stars.get(index).y * heightScale;
+            return new Ellipse2D.Double(x1 - starSize/2, y1 - starSize/2, starSize, starSize);
+        }
 
     //create getMax() method to find maximum value
     private int getMax() {
@@ -105,13 +120,13 @@ public class Plotting {
 
 }
 
-    public Plotting(List<Node> stars, List<Node> finalPath) {
+    public Plotting(List<Node> stars, Node end, Node start) {
         //create an instance of JFrame class
         JFrame frame = new JFrame();
         // set size, layout and location for frame.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
-        frame.add(new Frame(stars, finalPath));
+        frame.setSize(1920, 1080);
+        frame.add(new Frame(stars, end, start));
         frame.setLocation(0, 0);
         frame.setVisible(true);
 
