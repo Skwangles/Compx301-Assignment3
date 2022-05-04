@@ -25,7 +25,7 @@ public class Node{
     }
 
     public double getDistanceBetween(Node node){
-        return Math.sqrt((this.x - node.x)^2 + (this.y - node.y)^2);
+        return Math.sqrt(Math.pow((this.x - node.x), 2.00) + Math.pow((this.y - node.y),2.00));
     }
 
     public List<Node> findNeighbours(List<Node> stars, int maxDistance){

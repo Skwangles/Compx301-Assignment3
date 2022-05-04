@@ -3,4 +3,4 @@ javac Node.java
 javac AStar.java
 javac Plotting.java
 
-java AStar CSVFiles/small.csv 0 20 200
+java AStar CSVFiles/clusters.csv 7 59 1000

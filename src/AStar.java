@@ -38,10 +38,45 @@ public class AStar {
             System.err.println("Error occurred parsing the Commandline args");
         }
 
+        //
+        //-----------------------------------------A* IMPLEMENTATION--------------------------------------------
+        //
+        List<Node> OPEN = new ArrayList<>();
+        HashSet<Node> CLOSED = new HashSet<>();
+        OPEN.add(startStar);
+        Plotting plot = new Plotting(stars, new Node[]{startStar, goalStar}, startStar, goalStar);
+        while(OPEN.size() > 0){
+            Node temp = OPEN.get(0);//Will return null if list is empty
+            for(Node node : OPEN){
+                int fcost = node.getFCost();
+                if(fcost < temp.getFCost()){
+                    temp = node;
+                }
+                else if(fcost == temp.getFCost()){
+                    temp = (temp.hCost > node.hCost ? node : temp) ;
+                }
+            }
+            OPEN.remove(temp);
+            CLOSED.add(temp);
 
-        //Call this to plot the final path
-        //plot.setup(stars, new Node[]{temp}, startStar, goalStar);
+            if(temp.equals(goalStar)){
+                plot.setup(stars, new Node[]{temp}, startStar, goalStar);
+                break;//Break while, goal is found
+            }
 
-        System.out.println("---A* Finished---");
+            for (Node node: temp.findNeighbours(stars, maxTravelDist)) {
+                if (CLOSED.contains(node)) continue;
+                int movementCostToNode = (int) (temp.gCost + node.getDistanceBetween(temp));
+                if (!OPEN.contains(node) || movementCostToNode < node.gCost) {
+                    node.nodePrevious = temp;
+                    node.hCost = (int) goalStar.getDistanceBetween(node);
+                    node.gCost = movementCostToNode;
+                    if (!OPEN.contains(node)) OPEN.add(node);
+                }
+            }
+            Thread.sleep(10);//----------------------------------------------------REMOVE FOR INSTANTANEOUS CALCULATION-------------------
+            plot.setup(stars, CLOSED.toArray(new Node[CLOSED.size()]), startStar,  goalStar);
+        }
+        System.out.println("IF NO SCREEN IN SHOWING - NO PATH FOUND");
     }
 }
