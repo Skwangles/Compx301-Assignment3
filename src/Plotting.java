@@ -2,6 +2,8 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.util.List;
@@ -76,9 +78,8 @@ public class Plotting {
         }
 
 
-
-
         protected void paintComponent(Graphics grf) {
+
             //create instance of the Graphics to use its methods
             super.paintComponent(grf);
             Graphics2D graph = (Graphics2D) grf;
