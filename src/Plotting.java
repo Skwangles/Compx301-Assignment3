@@ -35,8 +35,8 @@ public class Plotting {
 
     class Frame extends JPanel {
 
-        float offsetX;
-        float offsetY;
+        double offsetX;
+        double offsetY;
         int marg = 20;
         int widthScale = 1;
         double heightScale = 1;
@@ -51,8 +51,8 @@ public class Plotting {
             this.beginningOfPath = beginningOfPath;
 
 
-            float maxNegativeX = 0;
-            float maxNegativeY = 0;
+            double maxNegativeX = 0;
+            double maxNegativeY = 0;
 
             //Find largest negative value
             for (Node node : stars) {
@@ -106,7 +106,10 @@ public class Plotting {
                     int prevIndex = currentNode.index;
                     currentNode = currentNode.nodePrevious;
                     if (currentNode == null) break;
+                    graph.setColor(Color.black);
                     graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale, marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
+                    graph.setColor(Color.red);
+                    graph.fill(drawNodeFromIndex(currentNode.index, reScalePointsToWindow, 7));
                 }
             }
 
@@ -140,8 +143,8 @@ public class Plotting {
         }
 
         //create getMax() method to find maximum value
-        private float getMax() {
-            float max = -Float.MAX_VALUE;
+        private double getMax() {
+            double max = -Double.MAX_VALUE;
             for (Node star : stars) {
                 if (star.x > max)
                     max = star.x;
@@ -149,7 +152,7 @@ public class Plotting {
             return max;
         }
 
-        public float convertToPositiveOffset(float num) {
+        public double convertToPositiveOffset(double num) {
             if (num < 0) {
                 return num * -1;
             }

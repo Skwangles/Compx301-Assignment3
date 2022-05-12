@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,7 +9,7 @@ public class AStar {
     public Node goalStar;
     public int maxTravelDist;
     public List<Node> stars;
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         AStar runInstance = new AStar();
         runInstance.run(args);//0-CSV, 1-Start index, 2-Finish index
 
@@ -19,7 +18,7 @@ public class AStar {
     /**
      * The non-static main method
      */
-    public void run(String[] args) throws InterruptedException {
+    public void run(String[] args) {
         //Code adapted from https://www.baeldung.com/java-csv-file-array
         stars = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(args[0]))) {
@@ -76,17 +75,23 @@ public class AStar {
                         if (!OPEN.contains(node)) OPEN.add(node);
                     }
                 }
-                Thread.sleep(50);//----------------------------------------------------REMOVE FOR INSTANTANEOUS CALCULATION-------------------
-                plot.setup(stars, CLOSED.toArray(new Node[CLOSED.size()]), startStar, goalStar);
+                try {
+                    Thread.sleep(50);//----------------------------------------------------REMOVE FOR INSTANTANEOUS CALCULATION-------------------
+                }
+                catch (Exception e){
+                    System.out.println("Thread sleep caused an issue");
+                    System.exit(1);
+                }
+                    plot.setup(stars, CLOSED.toArray(new Node[0]), startStar, goalStar);
             }
             String message;
             //Shows whether the program has calculated a successful path or not
             if (temp == goalStar) {
-                message = "Path Found!";
+                message = "Path Found! - Program will NOT auto close";
                 System.out.println(message);
                 new pop(message);
             } else {
-                message = "Path Not Found!";
+                message = "Path Not Found! - Program will auto close";
                 new pop(message);
                 System.err.println(message);
                 System.exit(1);

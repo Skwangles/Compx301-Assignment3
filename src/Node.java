@@ -28,7 +28,7 @@ public class Node{
         return Math.sqrt(Math.pow((this.x - node.x), 2.00) + Math.pow((this.y - node.y),2.00));
     }
 
-    public List<Node> findNeighbours(List<Node> stars, int maxDistance){
+    public List<Node> findNeighbours(List<Node> stars, double maxDistance){
         List<Node> neighbours = new ArrayList<>();
         for(Node n : stars){
             if(this.getDistanceBetween(n) <= maxDistance){
