@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.image.AffineTransformOp;
 import java.util.List;
 
 //Extends JPanel class
@@ -38,7 +39,7 @@ public class Plotting {
         double offsetX;
         double offsetY;
         int marg = 20;
-        int widthScale = 1;
+        double widthScale = 1;
         double heightScale = 1;
         List<Node> stars;
         Node[] endOfPath;
@@ -98,6 +99,7 @@ public class Plotting {
             graph.draw(new Line2D.Double(marg, marg, width - marg, marg));
 
 
+
             double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
 
             for(Node currentNode : endOfPath) {
@@ -120,9 +122,8 @@ public class Plotting {
             // set points to the graph
             for (int i = 0; i < stars.size(); i++) {
                 //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
-
                 graph.fill(drawNodeFromIndex(i, reScalePointsToWindow, 4));
-            }
+                }
 
             //Draw start and finish
             graph.setPaint(Color.GREEN);
@@ -131,8 +132,20 @@ public class Plotting {
             graph.fill(drawNodeFromIndex(goalStar.index, reScalePointsToWindow, 10));
 
             graph.setTransform(old);
-        }
 
+            for (int i = 0; i < stars.size(); i++) {
+                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
+                mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
+            }
+            //mirroredNumbers(graph, "Hello World", marg, height-10);
+        }
+        private void mirroredNumbers(Graphics2D g, String s, float x, float y)
+        {
+            //AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            g.setStroke(new BasicStroke(2));
+            g.drawString(s,x,y);
+            //image = op.filter(image, null);
+        }
         private Ellipse2D drawNodeFromIndex(int index, double scale, int starSize){
 
             double x1 = marg + scale * stars.get(index).x * widthScale;
