@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class AStar {
     public Node startStar;
     public Node goalStar;
-    public int maxTravelDist;
+    public double maxTravelDist;
     public List<Node> stars;
     public static void main(String[] args) {
         AStar runInstance = new AStar();
@@ -32,7 +32,7 @@ public class AStar {
             //Parsing other args
             startStar = stars.get(Integer.parseInt(args[1]));
             goalStar = stars.get(Integer.parseInt(args[2]));
-            maxTravelDist = Integer.parseInt(args[3]);
+            maxTravelDist = Double.parseDouble(args[3]);
         }
         catch (Exception e){
             System.err.println("Error occurred parsing the Commandline args");
