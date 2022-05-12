@@ -3,10 +3,10 @@ import java.util.List;
 
 public class Node{
     int index;
-    int hCost = 0;
-    int gCost = 0;
-    int x;
-    int y;
+    double hCost = 0;
+    double gCost = 0;
+    double x;
+    double y;
     Node nodePrevious = null;
 
     /**
@@ -14,13 +14,13 @@ public class Node{
      * @param x X coordinate on X axis
      * @param y Y coordinate on Y axis
      */
-    public Node(int x, int y, int index){
+    public Node(double x, double y, int index){
         this.index = index;
         this.x = x;
         this.y = y;
     }
 
-    public int getFCost(){
+    public double getFCost(){
         return gCost + hCost;
     }
 

@@ -38,8 +38,8 @@ public class Plotting {
 
     class Frame extends JPanel {
 
-        int offsetX;
-        int offsetY;
+        double offsetX;
+        double offsetY;
         int marg = 0;
         int widthScale = 1;
         double heightScale = 1;
@@ -54,8 +54,8 @@ public class Plotting {
             this.beginningOfPath = beginningOfPath;
 
 
-            int maxNegativeX = 0;
-            int maxNegativeY = 0;
+            double maxNegativeX = 0;
+            double maxNegativeY = 0;
 
             //Find largest negative value
             for (Node node : stars) {
@@ -137,8 +137,8 @@ public class Plotting {
         }
 
         //create getMax() method to find maximum value
-        private int getMax() {
-            int max = -Integer.MAX_VALUE;
+        private double getMax() {
+            double max = -Integer.MAX_VALUE;
             for (Node star : stars) {
                 if (star.x > max)
                     max = star.x;
@@ -146,7 +146,7 @@ public class Plotting {
             return max;
         }
 
-        public int convertToPositiveOffset(int num) {
+        public double convertToPositiveOffset(double num) {
             if (num < 0) {
                 return num * -1;
             }

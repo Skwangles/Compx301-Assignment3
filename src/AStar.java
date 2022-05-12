@@ -28,7 +28,7 @@ public class AStar {
 
                 String[] starCoords = scanner.nextLine().split(",");
 
-                stars.add(new Node(Integer.parseInt(starCoords[0]),Integer.parseInt(starCoords[1]), stars.size()));
+                stars.add(new Node(Double.parseDouble(starCoords[0]),Double.parseDouble(starCoords[1]), stars.size()));
             }
             //Parsing other args
             startStar = stars.get(Integer.parseInt(args[1]));
@@ -51,7 +51,7 @@ public class AStar {
             while (OPEN.size() > 0) {
                 temp = OPEN.get(0);//Will return null if list is empty
                 for (Node node : OPEN) {
-                    int fcost = node.getFCost();
+                    double fcost = node.getFCost();
                     if (fcost < temp.getFCost()) {
                         temp = node;
                     } else if (fcost == temp.getFCost()) {
@@ -68,10 +68,10 @@ public class AStar {
 
                 for (Node node : temp.findNeighbours(stars, maxTravelDist)) {
                     if (CLOSED.contains(node)) continue;
-                    int movementCostToNode = (int) (temp.gCost + node.getDistanceBetween(temp));
+                    double movementCostToNode = (temp.gCost + node.getDistanceBetween(temp));
                     if (!OPEN.contains(node) || movementCostToNode < node.gCost) {
                         node.nodePrevious = temp;
-                        node.hCost = (int) goalStar.getDistanceBetween(node);
+                        node.hCost = goalStar.getDistanceBetween(node);
                         node.gCost = movementCostToNode;
                         if (!OPEN.contains(node)) OPEN.add(node);
                     }
