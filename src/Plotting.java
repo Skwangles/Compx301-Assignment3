@@ -2,8 +2,7 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.util.List;
@@ -21,26 +20,24 @@ public class Plotting {
         frame.setLocation(0, 0);
 
         frame.add(new Frame(stars, nodesToDraw, start, goalStar));
+
         frame.setVisible(true);
     }
 
     public void setup(List<Node> stars, Node[] nodesToDraw, Node start, Node goalStar){
-        JFrame prevFrame = frame;
-        frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 800);
-        frame.setLocation(0, 0);
+        frame.invalidate();
         frame.add(new Frame(stars, nodesToDraw, start,  goalStar));
+
         frame.setVisible(true);
-        prevFrame.dispose();
+
     }
 
 
     class Frame extends JPanel {
 
-        int offsetX;
-        int offsetY;
-        int marg = 0;
+        float offsetX;
+        float offsetY;
+        int marg = 20;
         int widthScale = 1;
         double heightScale = 1;
         List<Node> stars;
@@ -54,8 +51,8 @@ public class Plotting {
             this.beginningOfPath = beginningOfPath;
 
 
-            int maxNegativeX = 0;
-            int maxNegativeY = 0;
+            float maxNegativeX = 0;
+            float maxNegativeY = 0;
 
             //Find largest negative value
             for (Node node : stars) {
@@ -84,6 +81,10 @@ public class Plotting {
             super.paintComponent(grf);
             Graphics2D graph = (Graphics2D) grf;
 
+            AffineTransform old = graph.getTransform();
+
+            graph.translate(0, getHeight()-1);
+            graph.scale(1, -1);
 
             //Sets the value of a single preference for the rendering algorithms.
             graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -94,7 +95,7 @@ public class Plotting {
 
             // draw graph lines
             graph.draw(new Line2D.Double(marg, marg, marg, height - marg));
-            graph.draw(new Line2D.Double(marg, height - marg, width - marg, height - marg));
+            graph.draw(new Line2D.Double(marg, marg, width - marg, marg));
 
 
             double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
@@ -115,7 +116,7 @@ public class Plotting {
 
             // set points to the graph
             for (int i = 0; i < stars.size(); i++) {
-                graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
+                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
 
                 graph.fill(drawNodeFromIndex(i, reScalePointsToWindow, 4));
             }
@@ -125,6 +126,8 @@ public class Plotting {
             graph.fill(drawNodeFromIndex(beginningOfPath.index, reScalePointsToWindow, 10));
             graph.setPaint(Color.BLUE);
             graph.fill(drawNodeFromIndex(goalStar.index, reScalePointsToWindow, 10));
+
+            graph.setTransform(old);
         }
 
         private Ellipse2D drawNodeFromIndex(int index, double scale, int starSize){
@@ -137,8 +140,8 @@ public class Plotting {
         }
 
         //create getMax() method to find maximum value
-        private int getMax() {
-            int max = -Integer.MAX_VALUE;
+        private float getMax() {
+            float max = -Float.MAX_VALUE;
             for (Node star : stars) {
                 if (star.x > max)
                     max = star.x;
@@ -146,11 +149,11 @@ public class Plotting {
             return max;
         }
 
-        public int convertToPositiveOffset(int num) {
+        public float convertToPositiveOffset(float num) {
             if (num < 0) {
                 return num * -1;
             }
-            return 0;//offset is nothing if everything is positive
+            return 0f;//offset is nothing if everything is positive
         }
 
     }
