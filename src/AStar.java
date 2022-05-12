@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class AStar {
     public Node startStar;
     public Node goalStar;
-    public float maxTravelDist;
+    public int maxTravelDist;
     public List<Node> stars;
     public static void main(String[] args) throws InterruptedException {
         AStar runInstance = new AStar();
@@ -25,9 +25,10 @@ public class AStar {
         try (Scanner scanner = new Scanner(new File(args[0]))) {
             //Populating stars list
             while (scanner.hasNextLine()) {
+
                 String[] starCoords = scanner.nextLine().split(",");
 
-                stars.add(new Node(Float.parseFloat(starCoords[0]),Float.parseFloat(starCoords[1]), stars.size()));
+                stars.add(new Node(Double.parseDouble(starCoords[0]),Double.parseDouble(starCoords[1]), stars.size()));
             }
             //Parsing other args
             startStar = stars.get(Integer.parseInt(args[1]));
@@ -36,7 +37,6 @@ public class AStar {
         }
         catch (Exception e){
             System.err.println("Error occurred parsing the Commandline args");
-            System.exit(1);
         }
 
         //
@@ -51,7 +51,7 @@ public class AStar {
             while (OPEN.size() > 0) {
                 temp = OPEN.get(0);//Will return null if list is empty
                 for (Node node : OPEN) {
-                    float fcost = node.getFCost();
+                    double fcost = node.getFCost();
                     if (fcost < temp.getFCost()) {
                         temp = node;
                     } else if (fcost == temp.getFCost()) {
@@ -68,10 +68,10 @@ public class AStar {
 
                 for (Node node : temp.findNeighbours(stars, maxTravelDist)) {
                     if (CLOSED.contains(node)) continue;
-                    float movementCostToNode = (float) (temp.gCost + node.getDistanceBetween(temp));
+                    double movementCostToNode = (temp.gCost + node.getDistanceBetween(temp));
                     if (!OPEN.contains(node) || movementCostToNode < node.gCost) {
                         node.nodePrevious = temp;
-                        node.hCost = (float) goalStar.getDistanceBetween(node);
+                        node.hCost = goalStar.getDistanceBetween(node);
                         node.gCost = movementCostToNode;
                         if (!OPEN.contains(node)) OPEN.add(node);
                     }

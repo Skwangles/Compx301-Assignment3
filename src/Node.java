@@ -3,10 +3,10 @@ import java.util.List;
 
 public class Node{
     int index;
-    float hCost = 0;
-    float gCost = 0;
-    float x;
-    float y;
+    double hCost = 0;
+    double gCost = 0;
+    double x;
+    double y;
     Node nodePrevious = null;
 
     /**
@@ -14,13 +14,13 @@ public class Node{
      * @param x X coordinate on X axis
      * @param y Y coordinate on Y axis
      */
-    public Node(float x, float y, int index){
+    public Node(double x, double y, int index){
         this.index = index;
         this.x = x;
         this.y = y;
     }
 
-    public float getFCost(){
+    public double getFCost(){
         return gCost + hCost;
     }
 
@@ -28,7 +28,7 @@ public class Node{
         return Math.sqrt(Math.pow((this.x - node.x), 2.00) + Math.pow((this.y - node.y),2.00));
     }
 
-    public List<Node> findNeighbours(List<Node> stars, float maxDistance){
+    public List<Node> findNeighbours(List<Node> stars, int maxDistance){
         List<Node> neighbours = new ArrayList<>();
         for(Node n : stars){
             if(this.getDistanceBetween(n) <= maxDistance){
