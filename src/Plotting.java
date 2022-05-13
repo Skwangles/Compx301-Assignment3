@@ -5,36 +5,43 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.List;
 
 //Extends JPanel class
 public class Plotting {
     //initialize coordinates
     JFrame frame;
+    Panel panel;
 
-    public Plotting(List<Node> stars, Node[] nodesToDraw, Node start, Node goalStar) {
+    public Plotting(List<Node> stars, Node nodesToDraw, Node start, Node goalStar) {
         //create an instance of JFrame class
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
         frame.setLocation(0, 0);
         frame.setBackground(Color.black);
-        Panel panel = new Panel(stars, nodesToDraw, start, goalStar);
+        panel = new Panel(stars, nodesToDraw, start, goalStar);
         panel.setBackground(Color.black);
         frame.add(panel);
 
         frame.setVisible(true);
     }
 
-    public void setup(List<Node> stars, Node[] nodesToDraw, Node start, Node goalStar){
+    public void setup(List<Node> stars, Node nodesToDraw, Node start, Node goalStar){
         frame.invalidate();
 
-        Panel panel = new Panel(stars, nodesToDraw, start, goalStar);
+        panel = new Panel(stars, nodesToDraw, start, goalStar);
         panel.setBackground(Color.black);
         frame.add(panel);
         frame.setVisible(true);
     }
 
+    public void addNode(Node node){
+        frame.invalidate();
+        panel.addNode(node);
+        frame.repaint();
+    }
 
     class Panel extends JPanel {
 
@@ -44,12 +51,13 @@ public class Plotting {
         double widthScale = 1;
         double heightScale = 1;
         List<Node> stars;
-        Node[] endOfPath;
+        ArrayList<Node> endOfPath;
         Node goalStar;
         Node beginningOfPath;
-        public Panel(List<Node> starList, Node[] endOfPath, Node beginningOfPath, Node goalStar) {
+        public Panel(List<Node> starList, Node endOfPath, Node beginningOfPath, Node goalStar) {
             stars = starList;
-            this.endOfPath = endOfPath;
+            this.endOfPath = new ArrayList<>();
+            this.endOfPath.add(endOfPath);
             this.goalStar = goalStar;
             this.beginningOfPath = beginningOfPath;
 
@@ -77,6 +85,10 @@ public class Plotting {
 
         }
 
+        public void addNode(Node node){
+            endOfPath.add(node);
+        }
+
 
         protected void paintComponent(Graphics grf) {
 
@@ -101,8 +113,8 @@ public class Plotting {
             graph.draw(new Line2D.Double(marg, marg, width - marg, marg));
 
             double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
-
             for(Node currentNode : endOfPath) {
+
                 //Draw finalPath
                 while (currentNode.nodePrevious != null) {
                     int prevIndex = currentNode.index;

@@ -47,15 +47,16 @@ public class AStar {
         PriorityQueue<Node> OPEN = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
         HashSet<Node> CLOSED = new HashSet<>();
         OPEN.add(startStar);
-
-        Plotting plot = new Plotting(stars, new Node[]{startStar, goalStar}, startStar, goalStar);
+        Plotting plot = new Plotting(stars, startStar, startStar, goalStar);
         Node temp = null;
         while (OPEN.size() > 0) {
-            temp = OPEN.poll();//Will return null if list is empty
+            temp = OPEN.poll();
 
             CLOSED.add(temp);
 
+
             if (temp.equals(goalStar)) {
+                plot.setup(stars, temp, startStar, goalStar);//Ensure the final goal is printed
                 break;//Break while, goal is found
             }
 
@@ -72,8 +73,8 @@ public class AStar {
 
                 //----------------------------------------------------REMOVE TRY/CATCH FOR INSTANTANEOUS CALCULATION--------------------------
             try {
-                plot.setup(stars, CLOSED.toArray(new Node[0]), startStar, goalStar);
-                Thread.sleep(15);
+                plot.addNode(temp);//Add path to plotting
+                Thread.sleep(40);
             }
             catch (Exception e){
                 System.out.println("Thread sleep caused an issue");
@@ -88,7 +89,6 @@ public class AStar {
                 message = "Path Found!\nClick OK to close the program";
                 System.out.println(message);
 
-                plot.setup(stars, new Node[]{temp}, startStar, goalStar);//Ensure the final goal is printed
                 new pop(message);
                 System.exit(0);
             } else {
