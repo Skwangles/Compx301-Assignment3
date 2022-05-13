@@ -13,29 +13,33 @@ public class Plotting {
     //initialize coordinates
     JFrame frame;
     Panel panel;
+    List<Node> stars;
+    Node start;
+    Node goalStar;
 
     public Plotting(List<Node> stars, Node nodesToDraw, Node start, Node goalStar) {
         //create an instance of JFrame class
+        this.stars = stars;
+        this.start = start;
+        this.goalStar = goalStar;
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
         frame.setLocation(0, 0);
         frame.setBackground(Color.black);
-        panel = new Panel(stars, nodesToDraw, start, goalStar);
+        panel = new Panel(this.stars, nodesToDraw, start, goalStar);
         panel.setBackground(Color.black);
         frame.add(panel);
 
         frame.setVisible(true);
     }
 
-    public void setup(List<Node> stars, Node nodesToDraw, Node start, Node goalStar){
+    public void drawSingle(Node nodesToDraw){
         frame.invalidate();
-
-        panel = new Panel(stars, nodesToDraw, start, goalStar);
-        panel.setBackground(Color.black);
-
+        panel.endOfPath.clear();
+        panel.endOfPath.add(nodesToDraw);
         frame.add(panel);
-        frame.setVisible(true);
+        frame.repaint();
     }
 
     public void addNode(Node node){
@@ -115,14 +119,19 @@ public class Plotting {
 
             double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
             for(Node currentNode : endOfPath) {
+                graph.setColor(Color.lightGray);
+                graph.setStroke(new BasicStroke(1));
+                if(currentNode.equals(goalStar))//differentiate final line from the others
+                {graph.setColor(Color.orange);
+                    graph.setStroke(new BasicStroke(4));}
 
                 //Draw finalPath
                 while (currentNode.nodePrevious != null) {
                     int prevIndex = currentNode.index;
                     currentNode = currentNode.nodePrevious;
-                    graph.setColor(Color.white);
+
                     graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale, marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
-                    graph.setColor(Color.red);
+
                     graph.fill(drawNodeFromIndex(currentNode.index, reScalePointsToWindow, 7));
                 }
             }
@@ -149,7 +158,6 @@ public class Plotting {
 //                 mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
 //            }
 
-            //mirroredNumbers(graph, "Hello World", marg, height-10);
         }
         private void mirroredNumbers(Graphics2D g, String s, float x, float y)
         {

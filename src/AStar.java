@@ -6,6 +6,8 @@ public class AStar {
     public Node goalStar;
     public double maxTravelDist;
     public List<Node> stars;
+
+    boolean visualiseAstar = true;
     public static void main(String[] args) {
         AStar runInstance = new AStar();
         runInstance.run(args);//0-CSV, 1-Start index, 2-Finish index
@@ -30,6 +32,9 @@ public class AStar {
             startStar = stars.get(Integer.parseInt(args[1]));
             goalStar = stars.get(Integer.parseInt(args[2]));
             maxTravelDist = Double.parseDouble(args[3]);
+            if(args.length == 5){
+                visualiseAstar = false;
+            }
         }
         catch (Exception e){
             System.err.println("Error occurred parsing the Commandline args");
@@ -38,11 +43,10 @@ public class AStar {
         //
         //-----------------------------------------A* IMPLEMENTATION--------------------------------------------
         //
-        if(args.length != 4) {
-            System.err.println("Usage of program: java AStar [CSVFile] [StartStarIndex] [GoalStarIndex] [MaxTravelDistance]");
+        if(args.length != 4 && args.length != 5) {
+            System.err.println("Usage of program: java AStar [CSVFile] [StartStarIndex] [GoalStarIndex] [MaxTravelDistance] [optional - anything to visualise the branching]");
             System.exit(1);
         }
-
         //List<Node> OPEN = new ArrayList<>();
         PriorityQueue<Node> OPEN = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
         HashSet<Node> CLOSED = new HashSet<>();
@@ -55,7 +59,7 @@ public class AStar {
             CLOSED.add(temp);
 
             if (temp.equals(goalStar)) {
-                plot.setup(stars, temp, startStar, goalStar);//Ensure the final goal is printed
+                plot.addNode(temp);//Ensure the final goal is printed
                 break;//Break while, goal is found
             }
 
@@ -70,16 +74,15 @@ public class AStar {
                     }
                 }
 
-                //----------------------------------------------------REMOVE TRY/CATCH FOR INSTANTANEOUS CALCULATION--------------------------
-            try {
-                plot.addNode(temp);//Add path to plotting
-                Thread.sleep(10);
+            if(visualiseAstar) {//Visualised the search as it searching, printing all the branches that have been explored
+                try {
+                    plot.addNode(temp);//Add path to plotting
+                    Thread.sleep(10);
+                } catch (Exception e) {
+                    System.out.println("Thread sleep caused an issue");
+                    System.exit(1);
+                }
             }
-            catch (Exception e){
-                System.out.println("Thread sleep caused an issue");
-                System.exit(1);
-            }
-
             }
             String message;
             //Shows whether the program has calculated a successful path or not
