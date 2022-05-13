@@ -1,8 +1,5 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class AStar {
     public Node startStar;
@@ -42,22 +39,14 @@ public class AStar {
         //-----------------------------------------A* IMPLEMENTATION--------------------------------------------
         //
         if(args.length == 4) {
-            List<Node> OPEN = new ArrayList<>();
+            //List<Node> OPEN = new ArrayList<>();
+            PriorityQueue<Node> OPEN = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
             HashSet<Node> CLOSED = new HashSet<>();
             OPEN.add(startStar);
             Plotting plot = new Plotting(stars, new Node[]{startStar, goalStar}, startStar, goalStar);
             Node temp = null;
             while (OPEN.size() > 0) {
-                temp = OPEN.get(0);//Will return null if list is empty
-                for (Node node : OPEN) {
-                    double fcost = node.getFCost();
-                    if (fcost < temp.getFCost()) {
-                        temp = node;
-                    } else if (fcost == temp.getFCost()) {
-                        temp = (temp.hCost > node.hCost ? node : temp);
-                    }
-                }
-                OPEN.remove(temp);
+                temp = OPEN.poll();//Will return null if list is empty
                 CLOSED.add(temp);
 
                 if (temp.equals(goalStar)) {

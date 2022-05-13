@@ -58,4 +58,6 @@ public class Node{
         if(((Node) objectInstance).x == this.x && ((Node) objectInstance).y == this.y) return true;
         return false;
     }
+
+
 }
