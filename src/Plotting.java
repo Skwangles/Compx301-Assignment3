@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.image.AffineTransformOp;
 import java.util.List;
 
 //Extends JPanel class
@@ -17,24 +16,27 @@ public class Plotting {
         //create an instance of JFrame class
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 800);
+        frame.setSize(800, 800);
         frame.setLocation(0, 0);
-
-        frame.add(new Frame(stars, nodesToDraw, start, goalStar));
+        frame.setBackground(Color.black);
+        Panel panel = new Panel(stars, nodesToDraw, start, goalStar);
+        panel.setBackground(Color.black);
+        frame.add(panel);
 
         frame.setVisible(true);
     }
 
     public void setup(List<Node> stars, Node[] nodesToDraw, Node start, Node goalStar){
         frame.invalidate();
-        frame.add(new Frame(stars, nodesToDraw, start,  goalStar));
 
+        Panel panel = new Panel(stars, nodesToDraw, start, goalStar);
+        panel.setBackground(Color.black);
+        frame.add(panel);
         frame.setVisible(true);
-
     }
 
 
-    class Frame extends JPanel {
+    class Panel extends JPanel {
 
         double offsetX;
         double offsetY;
@@ -45,7 +47,7 @@ public class Plotting {
         Node[] endOfPath;
         Node goalStar;
         Node beginningOfPath;
-        public Frame(List<Node> starList, Node[] endOfPath, Node beginningOfPath,  Node goalStar) {
+        public Panel(List<Node> starList, Node[] endOfPath, Node beginningOfPath, Node goalStar) {
             stars = starList;
             this.endOfPath = endOfPath;
             this.goalStar = goalStar;
@@ -88,7 +90,7 @@ public class Plotting {
             graph.scale(1, -1);
 
             //Sets the value of a single preference for the rendering algorithms.
-            graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // get width and height
             int width = getWidth();
@@ -98,17 +100,14 @@ public class Plotting {
             graph.draw(new Line2D.Double(marg, marg, marg, height - marg));
             graph.draw(new Line2D.Double(marg, marg, width - marg, marg));
 
-
-
             double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
 
             for(Node currentNode : endOfPath) {
                 //Draw finalPath
-                while (currentNode != null) {
+                while (currentNode.nodePrevious != null) {
                     int prevIndex = currentNode.index;
                     currentNode = currentNode.nodePrevious;
-                    if (currentNode == null) break;
-                    graph.setColor(Color.black);
+                    graph.setColor(Color.white);
                     graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale, marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
                     graph.setColor(Color.red);
                     graph.fill(drawNodeFromIndex(currentNode.index, reScalePointsToWindow, 7));
@@ -121,7 +120,6 @@ public class Plotting {
 
             // set points to the graph
             for (int i = 0; i < stars.size(); i++) {
-                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
                 graph.fill(drawNodeFromIndex(i, reScalePointsToWindow, 4));
                 }
 
@@ -133,10 +131,11 @@ public class Plotting {
 
             graph.setTransform(old);
 
-            for (int i = 0; i < stars.size(); i++) {
-                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
-                mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
-            }
+//            for (int i = 0; i < stars.size(); i++) {
+//                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
+//                mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
+//            }
+
             //mirroredNumbers(graph, "Hello World", marg, height-10);
         }
         private void mirroredNumbers(Graphics2D g, String s, float x, float y)
