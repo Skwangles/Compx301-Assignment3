@@ -40,17 +40,18 @@ public class AStar {
         //
         if(args.length == 4) {
             //List<Node> OPEN = new ArrayList<>();
-            PriorityQueue<Node> OPEN = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
+            PriorityQueue<Node> OPEN = new PriorityQueue<>((node1, node2) -> Double.compare(node1.getFCost(), node2.getFCost()));
             HashSet<Node> CLOSED = new HashSet<>();
             OPEN.add(startStar);
+
             Plotting plot = new Plotting(stars, new Node[]{startStar, goalStar}, startStar, goalStar);
             Node temp = null;
             while (OPEN.size() > 0) {
                 temp = OPEN.poll();//Will return null if list is empty
+
                 CLOSED.add(temp);
 
                 if (temp.equals(goalStar)) {
-                    plot.setup(stars, new Node[]{temp}, startStar, goalStar);
                     break;//Break while, goal is found
                 }
 
@@ -64,20 +65,27 @@ public class AStar {
                         if (!OPEN.contains(node)) OPEN.add(node);
                     }
                 }
+
+                //----------------------------------------------------REMOVE TRY/CATCH FOR INSTANTANEOUS CALCULATION-------------------
                 try {
-                    Thread.sleep(50);//----------------------------------------------------REMOVE FOR INSTANTANEOUS CALCULATION-------------------
+                    plot.setup(stars, CLOSED.toArray(new Node[0]), startStar, goalStar);
+                    Thread.sleep(15);
+
                 }
                 catch (Exception e){
                     System.out.println("Thread sleep caused an issue");
                     System.exit(1);
                 }
-                    plot.setup(stars, CLOSED.toArray(new Node[0]), startStar, goalStar);
+
             }
             String message;
             //Shows whether the program has calculated a successful path or not
+
             if (temp == goalStar) {
                 message = "Path Found! - Program will NOT auto close";
                 System.out.println(message);
+
+                plot.setup(stars, new Node[]{temp}, startStar, goalStar);//Ensure the final goal is printed
                 new pop(message);
             } else {
                 message = "Path Not Found! - Program will auto close";
