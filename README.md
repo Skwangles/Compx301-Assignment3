@@ -3,10 +3,7 @@
 ## AStar
 Uses the default Priority queue datastucture.
 
-To allow time to view the Astar working at the end of '-----Astar implementation---' 
-we have a try catch (labelled 'REMOVE TRY/CATCH FOR INSTANTANEOUS CALCULATION' 
-which runs a Thread.sleep delaying the execution. 
-If you would like instantaneous calculation feel free to remove the aforementioned try/catch
+If you would like instantaneous calculation add a 5th arg (doesn't matter what, it will remove the thread.sleep and not pring the 'other' paths/branches
 
 There will be a popup with an OK button - which will autoexit the program once clicked. 
 
