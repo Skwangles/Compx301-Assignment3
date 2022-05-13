@@ -4,4 +4,6 @@ javac Node.java
 javac AStar.java
 javac Plotting.java
 
-java AStar spiral.csv 160 2 8.7
+java AStar clusters.csv 82 57 9
+java AStar spiral.csv 160 2 9
+java AStar small.csv 20 17 5

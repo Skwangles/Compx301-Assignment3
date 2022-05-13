@@ -114,7 +114,6 @@ public class Plotting {
                 }
             }
 
-
             //set color for points
             graph.setPaint(Color.RED);
 
