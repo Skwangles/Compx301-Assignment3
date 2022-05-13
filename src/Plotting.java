@@ -33,6 +33,7 @@ public class Plotting {
 
         panel = new Panel(stars, nodesToDraw, start, goalStar);
         panel.setBackground(Color.black);
+
         frame.add(panel);
         frame.setVisible(true);
     }
@@ -102,7 +103,7 @@ public class Plotting {
             graph.scale(1, -1);
 
             //Sets the value of a single preference for the rendering algorithms.
-//            graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // get width and height
             int width = getWidth();
@@ -140,12 +141,12 @@ public class Plotting {
             graph.setPaint(Color.BLUE);
             graph.fill(drawNodeFromIndex(goalStar.index, reScalePointsToWindow, 10));
 
-            graph.setTransform(old);
+            graph.setTransform(old);//Unflips the drawing of the graph
 
             //----Draw indexs of each star----
+//            graph.setColor(Color.red);
 //            for (int i = 0; i < stars.size(); i++) {
-//                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
-//                mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
+//                 mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
 //            }
 
             //mirroredNumbers(graph, "Hello World", marg, height-10);

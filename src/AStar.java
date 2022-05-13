@@ -54,7 +54,6 @@ public class AStar {
 
             CLOSED.add(temp);
 
-
             if (temp.equals(goalStar)) {
                 plot.setup(stars, temp, startStar, goalStar);//Ensure the final goal is printed
                 break;//Break while, goal is found
@@ -74,7 +73,7 @@ public class AStar {
                 //----------------------------------------------------REMOVE TRY/CATCH FOR INSTANTANEOUS CALCULATION--------------------------
             try {
                 plot.addNode(temp);//Add path to plotting
-                Thread.sleep(40);
+                Thread.sleep(10);
             }
             catch (Exception e){
                 System.out.println("Thread sleep caused an issue");
