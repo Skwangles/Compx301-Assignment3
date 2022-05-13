@@ -3,6 +3,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+//Alexander Stokes - 1578409, Ralph Huey Olegario - 1522057
 class pop extends JFrame{
     /**
      * Shows a popup that displays a successful or failure message

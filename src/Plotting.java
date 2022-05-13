@@ -1,4 +1,4 @@
-//import require classes and packages
+//Alexander Stokes - 1578409, Ralph Huey Olegario - 1522057
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,9 +8,7 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
-//Extends JPanel class
 public class Plotting {
-    //initialize coordinates
     JFrame frame;
     Panel panel;
     List<Node> stars;
@@ -18,7 +16,6 @@ public class Plotting {
     Node goalStar;
 
     public Plotting(List<Node> stars, Node nodesToDraw, Node start, Node goalStar) {
-        //create an instance of JFrame class
         this.stars = stars;
         this.start = start;
         this.goalStar = goalStar;
@@ -34,17 +31,13 @@ public class Plotting {
         frame.setVisible(true);
     }
 
-    public void drawSingle(Node nodesToDraw){
-        frame.invalidate();
-        panel.endOfPath.clear();
-        panel.endOfPath.add(nodesToDraw);
-        frame.add(panel);
-        frame.repaint();
-    }
-
+    /**
+     * Adds the new node to the 'explored nodes' list
+     * @param node - Node that has been explored
+     */
     public void addNode(Node node){
         frame.invalidate();
-        panel.addNode(node);
+        panel.endOfPath.add(node);
         frame.repaint();
     }
 
@@ -70,7 +63,7 @@ public class Plotting {
             double maxNegativeX = 0;
             double maxNegativeY = 0;
 
-            //Find largest negative value
+            //Find largest negative value to make the new left/bottom most value
             for (Node node : stars) {
                 if (node.x < maxNegativeX) {
                     maxNegativeX = node.x;
@@ -90,19 +83,14 @@ public class Plotting {
 
         }
 
-        public void addNode(Node node){
-            endOfPath.add(node);
-        }
-
-
         protected void paintComponent(Graphics grf) {
 
             //create instance of the Graphics to use its methods
             super.paintComponent(grf);
             Graphics2D graph = (Graphics2D) grf;
 
+            //Flip the graph points
             AffineTransform old = graph.getTransform();
-
             graph.translate(0, getHeight()-1);
             graph.scale(1, -1);
 
@@ -113,19 +101,22 @@ public class Plotting {
             int width = getWidth();
             int height = getHeight();
 
-            // draw graph lines
+            // draw axis lines
             graph.draw(new Line2D.Double(marg, marg, marg, height - marg));
             graph.draw(new Line2D.Double(marg, marg, width - marg, marg));
 
-            double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();
+            double reScalePointsToWindow = (double) (height - 4 * marg) / getMax();//Normalises the points to the size of the window
             for(Node currentNode : endOfPath) {
                 graph.setColor(Color.lightGray);
                 graph.setStroke(new BasicStroke(1));
-                if(currentNode.equals(goalStar))//differentiate final line from the others
-                {graph.setColor(Color.orange);
-                    graph.setStroke(new BasicStroke(4));}
 
-                //Draw finalPath
+                if(currentNode.equals(goalStar))//differentiate final line from the others
+                {
+                    graph.setColor(Color.orange);
+                    graph.setStroke(new BasicStroke(4));
+                }
+
+                //Trace back path by looping through the parent of each node
                 while (currentNode.nodePrevious != null) {
                     int prevIndex = currentNode.index;
                     currentNode = currentNode.nodePrevious;
@@ -144,7 +135,7 @@ public class Plotting {
                 graph.fill(drawNodeFromIndex(i, reScalePointsToWindow, 4));
                 }
 
-            //Draw start and finish
+            //Draw start and finish stars
             graph.setPaint(Color.GREEN);
             graph.fill(drawNodeFromIndex(beginningOfPath.index, reScalePointsToWindow, 10));
             graph.setPaint(Color.BLUE);
@@ -175,7 +166,10 @@ public class Plotting {
 
         }
 
-        //create getMax() method to find maximum value
+        /**
+         * Gets the maximum x value for the reScaleToWindow calcuations
+         * @return x of the largest x star
+         */
         private double getMax() {
             double max = -Double.MAX_VALUE;
             for (Node star : stars) {
@@ -185,6 +179,11 @@ public class Plotting {
             return max;
         }
 
+        /**
+         * Converts the negative most value offset into a positive, so all the points are on the screen
+         * @param num - minimum x/y value
+         * @return 0 if not <0, the positive value otherwise
+         */
         public double convertToPositiveOffset(double num) {
             if (num < 0) {
                 return num * -1;

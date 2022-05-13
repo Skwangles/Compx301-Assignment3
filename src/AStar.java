@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.*;
+//Alexander Stokes - 1578409, Ralph Huey Olegario - 1522057
 
 public class AStar {
     public Node startStar;
@@ -44,10 +45,10 @@ public class AStar {
         //-----------------------------------------A* IMPLEMENTATION--------------------------------------------
         //
         if(args.length != 4 && args.length != 5) {
-            System.err.println("Usage of program: java AStar [CSVFile] [StartStarIndex] [GoalStarIndex] [MaxTravelDistance] [optional - anything to visualise the branching]");
+            System.err.println("Usage of program: java AStar [CSVFile] [StartStarIndex] [GoalStarIndex] [MaxTravelDistance] [optional - anything - remove sleep & other paths]");
             System.exit(1);
         }
-        //List<Node> OPEN = new ArrayList<>();
+
         PriorityQueue<Node> OPEN = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
         HashSet<Node> CLOSED = new HashSet<>();
         OPEN.add(startStar);
