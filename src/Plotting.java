@@ -130,6 +130,7 @@ public class Plotting {
 
             graph.setTransform(old);
 
+            //----Draw indexs of each star----
 //            for (int i = 0; i < stars.size(); i++) {
 //                //graph.drawString(String.valueOf(stars.get(i).index),(float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),(float)(marg + reScalePointsToWindow * stars.get(i).y * heightScale ));
 //                mirroredNumbers(graph, String.valueOf(stars.get(i).index), (float)( marg + reScalePointsToWindow * stars.get(i).x * widthScale),height - (float)(marg + reScalePointsToWindow * stars.get(i).y* heightScale));
