@@ -121,7 +121,7 @@ public class Plotting {
                     int prevIndex = currentNode.index;
                     currentNode = currentNode.nodePrevious;
 
-                    graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale, marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * widthScale));
+                    graph.draw(new Line2D.Double(marg + reScalePointsToWindow * stars.get(prevIndex).x * widthScale, marg + reScalePointsToWindow * stars.get(prevIndex).y * heightScale, marg + reScalePointsToWindow * stars.get(currentNode.index).x * widthScale, marg + reScalePointsToWindow * stars.get(currentNode.index).y * heightScale));
 
                     graph.fill(drawNodeFromIndex(currentNode.index, reScalePointsToWindow, 7));
                 }
